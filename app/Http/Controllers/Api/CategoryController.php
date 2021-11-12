@@ -21,7 +21,7 @@ class CategoryController extends Controller
     {
         $category = Category::create($request->all());
         $category->refresh();
-        return $category;
+        return new CategoryResource($category);
     }
 
     
@@ -34,7 +34,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, Category $category)
     {
         $category->update($request->all());
-        return $category;
+        return new CategoryResource($category);
     }
 
    
