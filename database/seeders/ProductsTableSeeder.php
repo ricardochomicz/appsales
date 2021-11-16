@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +15,11 @@ class ProductsTableSeeder extends Seeder
      */
     public function run()
     {
-        Product::factory()->create();
+        $categories = Category::all();
+        Product::factory()->create()
+            ->each(function(Product $product)use($categories){
+                $categoryId = $categories->random()->id;
+                $product->categories()->attach($categoryId);
+            });
     }
 }

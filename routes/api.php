@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\{
     CategoryController,
+    ProductCategoryController,
     ProductController
 };
 use Illuminate\Http\Request;
@@ -15,4 +16,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['as' => 'api.'], function () {
     Route::resource('categories', CategoryController::class, ['except' => ['create', 'edit']]);
     Route::resource('products', ProductController::class, ['except' => ['create', 'edit']]);
+    Route::resource('products.categories', ProductCategoryController::class, ['only' => ['index', 'store', 'destroy']]);
 });
