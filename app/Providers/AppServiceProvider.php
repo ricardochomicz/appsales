@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Models\{
     Category,
-    Product
+    Product,
+    ProductInput
 };
 use App\Observers\{
     CategoryObserver,
+    ProductInputObserver,
     ProductObserver
 };
 
@@ -34,5 +36,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Category::observe(CategoryObserver::class);
         Product::observe(ProductObserver::class);
+        ProductInput::observe(ProductInputObserver::class);
     }
 }
