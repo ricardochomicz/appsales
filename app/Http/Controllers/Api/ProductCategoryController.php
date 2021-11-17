@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductCategoryRequest;
+use App\Http\Resources\ProductCategoryResource;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -13,10 +14,8 @@ class ProductCategoryController extends Controller
 
     public function index(Product $product)
     {
-        //retorna os dados e não o relacionamento
-        return $product->categories;
+        return new ProductCategoryResource($product);
     }
-
 
 
     public function store(ProductCategoryRequest $request, Product $product)
@@ -29,9 +28,8 @@ class ProductCategoryController extends Controller
         $categories = Category::whereIn('id', $categoriesAttachedId)->get();
         //realiza a serialização forçada status 201
         //retorna 201 se tiver categorias adicionadas, senão retorna o array vazio
-        return $categories->count() ? response()->json($categories, 201) : [];
+        return $categories->count() ? response()->json(new ProductCategoryResource($product), 201) : [];
     }
-
 
 
     public function destroy(Product $product, Category $category)

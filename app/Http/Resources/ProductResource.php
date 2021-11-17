@@ -19,10 +19,10 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'price' => $this->price,
-            'stock' => $this->stock,
+            'price' => (float) $this->price,
+            'stock' => (int) $this->stock,
             'slug' => $this->slug,
-            'active' => $this->active,
+            'active' => (bool) $this->active,
             'created_at' => Carbon::parse($this->created_at)->format("d/m/Y"),
             'updated_at' => Carbon::parse($this->updated_at)->format("d/m/Y"),
         ];
