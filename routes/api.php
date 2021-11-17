@@ -4,7 +4,8 @@ use App\Http\Controllers\Api\{
     CategoryController,
     ProductCategoryController,
     ProductController,
-    ProductInputController
+    ProductInputController,
+    ProductOutputController
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,4 +20,5 @@ Route::group(['as' => 'api.'], function () {
     Route::resource('products', ProductController::class, ['except' => ['create', 'edit']]);
     Route::resource('products.categories', ProductCategoryController::class, ['only' => ['index', 'store', 'destroy']]);
     Route::resource('inputs', ProductInputController::class, ['only' => ['index', 'store', 'show']]);
+    Route::resource('outputs', ProductOutputController::class, ['only' => ['index', 'store', 'show']]);
 });

@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProductInputFactory extends Factory
+class ProductOutputFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,7 +14,7 @@ class ProductInputFactory extends Factory
     public function definition()
     {
         return [
-            'amount' => $this->faker->numberBetween(2, 30)
+            'amount' => $this->faker->numberBetween(1,2)
         ];
     }
 }

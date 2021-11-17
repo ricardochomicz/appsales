@@ -5,12 +5,14 @@ namespace App\Providers;
 use App\Models\{
     Category,
     Product,
-    ProductInput
+    ProductInput,
+    ProductOutput
 };
 use App\Observers\{
     CategoryObserver,
     ProductInputObserver,
-    ProductObserver
+    ProductObserver,
+    ProductOutputObserver
 };
 
 use Illuminate\Support\ServiceProvider;
@@ -37,5 +39,6 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         Product::observe(ProductObserver::class);
         ProductInput::observe(ProductInputObserver::class);
+        ProductOutput::observe(ProductOutputObserver::class);
     }
 }

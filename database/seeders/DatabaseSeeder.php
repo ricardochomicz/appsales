@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
                 $product->categories()->attach($categoryId);
             });
         $products = Product::all();
-        ProductInput::factory(150)
+        ProductInput::factory(200)
             ->make()
             ->each(function ($input) use ($products) {
                 $product = $products->random();
@@ -34,5 +34,7 @@ class DatabaseSeeder extends Seeder
                 $product->stock += $input->amount;
                 $product->save();
             });
+
+        
     }
 }
