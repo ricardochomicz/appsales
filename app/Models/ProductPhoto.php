@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ProductPhoto extends Model
 {
@@ -25,9 +26,27 @@ class ProductPhoto extends Model
 
     public static function createWithPhotosFiles(int $productId, array $files)
     {
-        self::uploadFiles($productId, $files);
-        $photos = self::createPhotoModels($productId, $files);
-        return new Collection($photos);
+        try {
+            self::uploadFiles($productId, $files);
+            DB::beginTransaction();
+            $photos = self::createPhotoModels($productId, $files);
+            DB::commit();
+            return new Collection($photos);
+        } catch (\Exception $e) {
+            self::deleteFiles($productId, $files);
+            DB::rollBack();
+            throw $e;           
+        }
+    }
+
+    private static function deleteFiles(int $productId, array $files){
+        foreach ($files as $file) {
+            $path = self::photosPath($productId);
+            $photoPath = "{$path}/{$file->hashName()}";
+            if(file_exists($photoPath)){
+                \File::delete($photoPath);
+            }
+        }
     }
 
     public static function uploadFiles(int $productId, array $files)
@@ -38,19 +57,21 @@ class ProductPhoto extends Model
         }
     }
 
-    private static function createPhotoModels(int $productId, array $files){
+    private static function createPhotoModels(int $productId, array $files)
+    {
         $photos = [];
         /** @var uploadFiles $file */
-        foreach($files as $file){
+        foreach ($files as $file) {
             $photos[] = self::create([
-               'file_name' => $file->hashName(),
-               'product_id' => $productId 
+                'file_name' => $file->hashName(),
+                'product_id' => $productId
             ]);
         }
         return $photos;
     }
 
-    public function getPhotoUrlAttribute(){
+    public function getPhotoUrlAttribute()
+    {
         $path = self::photosDir($this->product_id);
         return asset("storage/{$path}/{$this->file_name}");
     }
@@ -61,7 +82,7 @@ class ProductPhoto extends Model
         return "{$dir}/{$productId}";
     }
 
-    
+
 
     public function product()
     {
