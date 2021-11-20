@@ -16,4 +16,9 @@ class Product extends Model
         //N:N muitos para muitos
         return $this->belongsToMany(Category::class);
     }
+
+    public function photos()
+    {
+        return $this->hasMany(ProductPhoto::class);
+    }
 }
