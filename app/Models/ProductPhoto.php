@@ -1,11 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductPhoto extends Model
 {
@@ -35,15 +38,40 @@ class ProductPhoto extends Model
         } catch (\Exception $e) {
             self::deleteFiles($productId, $files);
             DB::rollBack();
-            throw $e;           
+            throw $e;
         }
     }
 
-    private static function deleteFiles(int $productId, array $files){
+    public function updateWithPhoto(UploadedFile $file) :ProductPhoto
+    {
+
+        try {
+            $test = self::uploadFiles($this->product_id, [$file]);
+            DB::beginTransaction();
+            $this->deletePhoto($this->file_name);
+            $this->file_name = $file->hashName();
+            $this->save();
+            DB::commit();
+            return $this;
+        } catch (\Throwable $th) {
+            self::deleteFiles($this->product_id, [$file]);
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    private function deletePhoto($fileName)
+    {
+        $dir = self::photosDir($this->product_id);
+        Storage::disk('public')->delete("{$dir}/{$fileName}");
+    }
+
+    private static function deleteFiles(int $productId, array $files)
+    {
         foreach ($files as $file) {
             $path = self::photosPath($productId);
             $photoPath = "{$path}/{$file->hashName()}";
-            if(file_exists($photoPath)){
+            if (file_exists($photoPath)) {
                 \File::delete($photoPath);
             }
         }

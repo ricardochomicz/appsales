@@ -8,6 +8,7 @@ use App\Http\Resources\ProductPhotoCollection;
 use App\Http\Resources\ProductPhotoResource;
 use App\Models\Product;
 use App\Models\ProductPhoto;
+use Database\Factories\ProductPhotoFactory;
 use Illuminate\Http\Request;
 
 class ProductPhotoController extends Controller
@@ -57,9 +58,18 @@ class ProductPhotoController extends Controller
      * @param  \App\Models\ProductPhoto  $productPhoto
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProductPhoto $productPhoto)
+    public function update(Request $request, Product $product, ProductPhoto $photo)
     {
-        //
+        $this->hasProductPhoto($photo, $product);
+        $photo = $photo->updateWithPhoto($request->photo);
+        return new ProductPhotoResource($photo);
+    }
+
+    private function hasProductPhoto(ProductPhoto $photo, Product $product)
+    {
+        if($photo->product_id != $product->id){
+            abort(404);
+        }
     }
 
     /**
