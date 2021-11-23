@@ -60,17 +60,14 @@ class ProductPhotoController extends Controller
      */
     public function update(Request $request, Product $product, ProductPhoto $photo)
     {
-        $this->hasProductPhoto($photo, $product);
+        $this->hasProductPhoto($product, $photo);
         $photo = $photo->updateWithPhoto($request->photo);
         return new ProductPhotoResource($photo);
     }
 
-    private function hasProductPhoto(ProductPhoto $photo, Product $product)
-    {
-        if($photo->product_id != $product->id){
-            abort(404);
-        }
-    }
+   
+
+   
 
     /**
      * Remove the specified resource from storage.
@@ -78,8 +75,17 @@ class ProductPhotoController extends Controller
      * @param  \App\Models\ProductPhoto  $productPhoto
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductPhoto $productPhoto)
+    public function destroy(Product $product, ProductPhoto $photo)
     {
-        //
+        $this->hasProductPhoto($product, $photo);
+        $photo->deleteWithPhoto();
+        return response()->json([], 204);
+    }
+
+    private function hasProductPhoto(Product $product, ProductPhoto $photo)
+    {
+        if($photo->product_id != $product->id){
+            abort(404);
+        }
     }
 }
