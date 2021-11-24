@@ -7,6 +7,7 @@ use App\Models\{
     Product
 };
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -60,11 +61,22 @@ class RouteServiceProvider extends ServiceProvider
             return $collection->first();
         });
 
-        Route::bind('product', function($value){
+        Route::bind('product', function ($value) {
             /** @var Collection $collection */
-            $collection = Product::whereId($value)->orWhere('slug', $value)->get();
+            $query = Product::query();
+            $query = $this->onlyTrashedIfRequest($query);
+            $collection = $query->whereId($value)->orWhere('slug', $value)->get();
             return $collection->first();
         });
+    }
+
+    //busca somente os registros excluidos
+    private function onlyTrashedIfRequest(Builder $query)
+    {
+        if (\Request::get('trashed') == 1) {
+            $query = $query->onlyTrashed();
+        }
+        return $query;
     }
 
     /**
