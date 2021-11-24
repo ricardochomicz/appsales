@@ -18,6 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['as' => 'api.'], function () {
     Route::resource('categories', CategoryController::class, ['except' => ['create', 'edit']]);
+    Route::patch('products/{product}/restore', [ProductController::class, 'restore']);
     Route::resource('products', ProductController::class, ['except' => ['create', 'edit']]);
     Route::resource('products.categories', ProductCategoryController::class, ['only' => ['index', 'store', 'destroy']]);
     Route::resource('products.photos', ProductPhotoController::class, ['except' => ['create', 'edit']]);
