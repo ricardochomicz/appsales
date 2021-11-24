@@ -128,6 +128,7 @@ class ProductPhoto extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        //retorna o produto relacionado mesmo se estiver excluído
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 }
