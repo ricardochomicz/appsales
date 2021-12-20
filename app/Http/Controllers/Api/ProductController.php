@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Common\OnlyTrashed;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-   
-    public function index()
+    use OnlyTrashed;
+
+    public function index(Request $request)
     {
+        $query = Product::query();
+        $query = $this->onlyTrashedIfRequest($request, $query);
         $products = Product::paginate();
         return ProductResource::collection($products);
     }
 
-    
+
     public function store(ProductRequest $request)
     {
         $product = Product::create($request->all());
@@ -24,13 +29,13 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    
+
     public function show(Product $product)
     {
         return new ProductResource($product);
     }
 
-    
+
     public function update(ProductRequest $request, Product $product)
     {
         $product->update($request->all());
@@ -43,11 +48,10 @@ class ProductController extends Controller
         return response()->json([], 204);
     }
 
-   
+
     public function destroy(Product $product)
     {
         $product->delete();
         return response()->json([], 204);
     }
-
 }

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductInput;
 use App\Models\ProductPhoto;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
@@ -46,9 +47,12 @@ class DatabaseSeeder extends Seeder
             $self->createPhotoDir($product);
             $self->createPhotosModels($product);
         });
+
+        User::factory(1)->create();
     }
 
-    private function getFakerPhotos(){
+    private function getFakerPhotos()
+    {
         return collect(\File::allFiles(storage_path($this->fakerPhotosPath)));
     }
 
@@ -82,16 +86,18 @@ class DatabaseSeeder extends Seeder
         $this->generatePhoto($photo);
     }
 
-    private function generatePhoto(ProductPhoto $photo){
+    private function generatePhoto(ProductPhoto $photo)
+    {
         $photo->file_name = $this->uploadPhoto($photo->product_id);
         $photo->save();
     }
 
-    private function uploadPhoto($productId){
+    private function uploadPhoto($productId)
+    {
         $photoFile = $this->allFakerPhotos->random();
         $uploadFile = new UploadedFile(
             $photoFile->getRealPath(),
-            Str::random(16). '.' . $photoFile->getExtension()
+            Str::random(16) . '.' . $photoFile->getExtension()
         );
         ProductPhoto::uploadFiles($productId, [$uploadFile]);
         return $uploadFile->hashName();

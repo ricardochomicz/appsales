@@ -6,7 +6,8 @@ use App\Http\Controllers\Api\{
     ProductController,
     ProductInputController,
     ProductOutputController,
-    ProductPhotoController
+    ProductPhotoController,
+    UserController
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group(['as' => 'api.'], function () {
+    Route::resource('users', UserController::class, ['except' => ['create', 'edit']]);
     Route::resource('categories', CategoryController::class, ['except' => ['create', 'edit']]);
     Route::patch('products/{product}/restore', [ProductController::class, 'restore']);
     Route::resource('products', ProductController::class, ['except' => ['create', 'edit']]);

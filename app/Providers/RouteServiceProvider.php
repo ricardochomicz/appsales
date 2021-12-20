@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Common\OnlyTrashed;
 use App\Models\{
     Category,
-    Product
+    Product,
+    User
 };
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,6 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    /**
+     * Trait para consulta registros excluídos
+     * onlyTrashedIfRequest
+     */
+    use OnlyTrashed;
+
     /**
      * The path to the "home" route for your application.
      *
@@ -64,20 +72,23 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('product', function ($value) {
             /** @var Collection $collection */
             $query = Product::query();
-            $query = $this->onlyTrashedIfRequest($query);
+            $request = app(Request::class);
+            $query = $this->onlyTrashedIfRequest($request, $query);
             $collection = $query->whereId($value)->orWhere('slug', $value)->get();
+            return $collection->first();
+        });
+
+        Route::bind('user', function($value){
+            /** @var Collection $collection */
+            $query = User::query();
+            $request = app(Request::class);
+            $query = $this->onlyTrashedIfRequest($request, $query);
+            $collection = $query->whereId($value)->orWhere('email', $value)->get();
             return $collection->first();
         });
     }
 
-    //busca somente os registros excluidos
-    private function onlyTrashedIfRequest(Builder $query)
-    {
-        if (\Request::get('trashed') == 1) {
-            $query = $query->onlyTrashed();
-        }
-        return $query;
-    }
+    
 
     /**
      * Configure the rate limiters for the application.
