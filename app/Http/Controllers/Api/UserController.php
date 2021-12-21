@@ -32,7 +32,7 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $user = User::create($request->all());
-        event(new UserCreatedEvent($user));
+        //event(new UserCreatedEvent($user));
         return new UserResource($user);
     }
 
