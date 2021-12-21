@@ -25,6 +25,10 @@ class SendEmailToDefinePassword
     public function handle(UserCreatedEvent $event)
     {
         //enviar e-mail para redefinir a senha
-        echo $event->getUser()->name;
+        /** @var User $user */
+        $user = $event->getUser();
+        $token = \Password::broker()->createToken($user);
+        $user->sendPasswordResetNotification($token);
+        //$user->notify(new MyResetPassword($token));
     }
 }
