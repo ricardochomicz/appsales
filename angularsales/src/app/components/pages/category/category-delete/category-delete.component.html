@@ -1,0 +1,18 @@
+
+    <modal (onHide)="hideModal($event)">
+        <h5 modal-title>Deletar Categoria</h5>
+        <div modal-body>
+            <div class="overlay" style="background: transparent;" *ngIf="loader">
+                <div class="d-flex align-items-center">
+                    <div class="spinner-border text-primary ms-auto d-block" style="width: 3rem; height: 3rem;"
+                        role="status" aria-hidden="true"></div>
+                </div>
+            </div>
+            Deseja deletar a categoria? <b class="ml-3">{{category?.name}}</b>
+        </div>
+        <div modal-footer>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+            <button type="submit" class="btn btn-primary" (click)="destroy()">Deletar</button>
+        </div>
+    </modal>
+
