@@ -13,7 +13,7 @@ class CategoryController extends Controller
     
     public function index()
     {
-        return CategoryResource::collection(Category::orderBy('name', 'asc')->paginate());     
+        return CategoryResource::collection(Category::orderBy('name', 'asc')->paginate(5));     
     }
 
     

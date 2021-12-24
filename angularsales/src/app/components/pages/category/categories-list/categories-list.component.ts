@@ -1,10 +1,15 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { Category } from 'src/app/models';
+import { CategoryHttpService } from 'src/app/services/http/category-http.service';
 import { CategoryDeleteComponent } from '../category-delete/category-delete.component';
 import { CategoryEditComponent } from '../category-edit/category-edit.component';
 import { CategoryNewComponent } from '../category-new/category-new.component';
+import { CategoryDeleteService } from './category-delete.service';
+import { CategoryInsertService } from './category-insert.service';
+import { CategoryUpdateService } from './category-update.service';
 
 
 @Component({
@@ -14,13 +19,19 @@ import { CategoryNewComponent } from '../category-new/category-new.component';
 })
 export class CategoriesListComponent implements OnInit {
 
-    categoryId!: number
+    categoryId: number
+
+    pagination = {
+        page: 1,
+        totalItems: 0,
+        itemsPerPage: 15
+    }
 
     public loading = false;
-    categories: Array<any> = [];
+    categories: Array<Category> = [];
 
     @ViewChild(CategoryNewComponent)
-    categoryNew!: CategoryNewComponent
+    categoryNew: CategoryNewComponent
 
     @ViewChild(CategoryEditComponent)
     categoryEdit!: CategoryEditComponent
@@ -29,7 +40,16 @@ export class CategoriesListComponent implements OnInit {
     categoryDelete!: CategoryDeleteComponent
 
 
-    constructor(private http: HttpClient, private toastr: ToastrService, private spinner: NgxSpinnerService) { }
+    constructor(private categoryHttp: CategoryHttpService,
+        private toastr: ToastrService,
+        private spinner: NgxSpinnerService,
+        public categoryInsertService: CategoryInsertService,
+        public categoryUpdateService: CategoryUpdateService,
+        public categoryDeleteService: CategoryDeleteService) {
+        this.categoryInsertService.categoryListComponent = this
+        this.categoryUpdateService.categoryListComponent = this
+        this.categoryDeleteService.categoryListComponent = this
+    }
 
     ngOnInit(): void {
         this.getCategories()
@@ -37,59 +57,28 @@ export class CategoriesListComponent implements OnInit {
 
     getCategories() {
         this.spinner.show()
-        const token = window.localStorage.getItem('token')
-        this.http.get<{ data: Array<any> }>('http://localhost:8000/api/categories', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        this.categoryHttp.getAll(this.pagination.page)
             .subscribe(response => {
                 this.spinner.hide()
                 this.categories = response.data
-            }, (err) => {
+                this.pagination.totalItems = response.meta.total
+                this.pagination.itemsPerPage = response.meta.per_page
+            }, (err: HttpErrorResponse) => {
                 this.spinner.hide()
-                this.toastr.error('Ops! Erro ao carregar as categorias.')
+                this.toastr.error(`Erro ao carregar as categorias (Cód. ${err.status} - ${err.statusText})`)
             })
     }
 
-    showModalInsert() {
-        this.categoryNew.showModal()
-    }
-
-    showModalEdit(categoryId: number) {
-        this.categoryId = categoryId
-        this.categoryEdit.showModal()
-    }
-
-    showModalDelete(categoryId: number) {
-        this.categoryId = categoryId
-        this.categoryDelete.showModal()
-    }
-
-    onInsertSuccess($event: any) {
-        this.getCategories();
-    }
-
-    onInsertError($event: HttpErrorResponse) {
-        console.log(event)
-    }
-
-    onEditSuccess($event: any) {
-
-        this.getCategories();
-    }
-
-    onEditError($event: HttpErrorResponse) {
-        console.log(event)
-    }
-
-    onDeleteSuccess($event: any) {
+    pageChanged(page: number) {
+        this.pagination.page = page
         this.getCategories()
     }
 
-    onDeleteError($event: any) {
-        console.log(event)
-    }
+
+
+
+
+
 
 
 

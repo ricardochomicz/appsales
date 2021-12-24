@@ -1,8 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ModalComponent } from 'src/app/components/bootstrap/modal/modal.component';
 import { ToastrService } from 'ngx-toastr';
-import { throwError } from 'rxjs';
+import { CategoryHttpService } from 'src/app/services/http/category-http.service';
 
 @Component({
     selector: 'category-edit',
@@ -19,58 +19,53 @@ export class CategoryEditComponent implements OnInit {
 
     public loader = false;
 
-    _categoryId!: number
+    _categoryId: number;
 
     category = {
         name: '',
-        active: ''
+        active: true
     }
 
-    constructor(private http: HttpClient, private toastr: ToastrService) { }
+    constructor(private categoryHttp: CategoryHttpService, private toastr: ToastrService) { }
 
     ngOnInit(): void {
     }
 
     @Input()
     set categoryId(value: number) {
-
         this.loader = true;
         this._categoryId = value
         if (this._categoryId) {
-            const token = window.localStorage.getItem('token')
-            this.http.get<{ data: any }>(`http://localhost:8000/api/categories/${value}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            .subscribe((response) => {
-                this.category = response.data
-                this.loader = false;
-            }, (err) => {
-                this.onError.emit(err)
-                this.toastr.error('Ops! Erro ao carregar categoria')
-            })
+            this.categoryHttp.get(this._categoryId)
+                .subscribe(category => {
+                    // @ts-ignore
+                    this.category = category
+                    this.loader = false;
+                }, (err: HttpErrorResponse) => {
+                    this.loader = false;
+                    this.onError.emit(err)
+                    this.toastr.error(`Erro ao carregar categoria (Cód.${err.status} - ${err.statusText})`)
+                })
         }
     }
 
     submit() {
-        const token = window.localStorage.getItem('token')
-        this.http.put(`http://localhost:8000/api/categories/${this._categoryId}`, this.category, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).subscribe(response => {
-            this.toastr.success('Categoria atualizada com sucesso!')
-            this.onSuccess.emit(this.category)
-            this.modal.hide()
-        }, (err) => {
-            this.toastr.error('Ops! Erro ao atualizar categoria')
-            this.onError.emit(err)          
-        })
+        // @ts-ignore
+        this.categoryHttp.update(this._categoryId, this.category)
+            // @ts-ignore
+            .subscribe((category) => {
+                this.onSuccess.emit(category)
+                this.modal.hide()
+            }, (err: HttpErrorResponse) => {
+                this.onError.emit(err)
+            })
     }
 
     showModal() {
-        this.modal.show()
+        setTimeout(() => {
+            this.modal.show()
+        }, 1000)
+
     }
 
     hideModal($event: any) {

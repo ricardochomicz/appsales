@@ -16,7 +16,6 @@ export class AppComponent implements OnInit {
   utcTime(): void {
     setInterval( () => {
       this.data = new Date();
-      console.log(this.data); // just testing if it is working
     }, 1);
   }
 

@@ -1,7 +1,8 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title mt-1">Categorias</h3>
-        <button class="btn btn-primary btn-sm float-right" (click)="showModalInsert()">Novo</button>
+        <button class="btn btn-primary btn-sm float-right"
+            (click)="categoryInsertService.showModalInsert()">Novo</button>
     </div>
     <!-- /.card-header -->
     <div class="card-body p-0">
@@ -16,46 +17,47 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let category of categories" [ngClass]="{'': 'category.active', 'text-danger': !category.active}">
+                <tr *ngFor="let category of categories | paginate: {itemsPerPage: 5, currentPage: pagination.page, totalItems: pagination.totalItems}"
+                    [ngClass]="{'': 'category.active', 'text-danger': !category.active}">
                     <td>{{category.id}}</td>
                     <td>{{category.name}}</td>
                     <td class="text-center">
-                        <i class="fas fa-circle" 
-                        [ngClass]="{'text-success': category.active, 'text-danger': !category.active}"
-                        tooltip="{{category.active ? 'Ativo' : 'Inativo'}}"></i>
+                        <i class="fas fa-circle"
+                            [ngClass]="{'text-success': category.active, 'text-danger': !category.active}"
+                            tooltip="{{category.active ? 'Ativo' : 'Inativo'}}"></i>
                     </td>
                     <td>{{category.created_at}}</td>
                     <td class="btn-group">
-                        <a href="javascript:void(0)" class="btn btn-sm btn-primary mr-1" (click)="showModalEdit(category.id)"
-                        >
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary mr-1"
+                            (click)="categoryUpdateService.showModalEdit(category.id)" *ngIf="category.id">
                             <i class="fas fa-pencil-alt"></i>
                         </a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" (click)="showModalDelete(category.id)"
-                        >
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger"
+                            (click)="categoryDeleteService.showModalDelete(category.id)" *ngIf="category.id">
                             <i class="fas fa-trash-alt"></i>
                         </a>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div class="pagination justify-content-center mt-2">
+            <pagination-controls (pageChange)="pageChanged($event)"
+                previousLabel="Anterior" nextLabel="Próxima"></pagination-controls>
+        </div>
     </div>
     <!-- /.card-body -->
 </div>
-<ngx-spinner
-  bdColor="rgba(51,51,51,0.8)"
-  size="medium"
-  color="#fff"
-  type="ball-scale-multiple">
-  <p style="font-size: 20px; color: white">Carregando Categorias...</p>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">Carregando Categorias...</p>
 </ngx-spinner>
 
 
-<category-new (onSuccess)="onInsertSuccess($event)" (onError)="onInsertError($event)"></category-new>
+<category-new (onSuccess)="categoryInsertService.onInsertSuccess($event)"
+    (onError)="categoryInsertService.onInsertError($event)"></category-new>
 
-<category-edit [categoryId]="categoryId"
-(onSuccess)="onEditSuccess($event)" (onSuccess)="onEditSuccess($event)"
-></category-edit>
+<category-edit [categoryId]="categoryId" (onSuccess)="categoryUpdateService.onEditSuccess($event)"
+    (onError)="categoryUpdateService.onEditError($event)"></category-edit>
 
-<category-delete [categoryId]="categoryId"
-(onSuccess)="onDeleteSuccess($event)" (onSuccess)="onDeleteSuccess($event)">
+<category-delete [categoryId]="categoryId" (onSuccess)="categoryDeleteService.onDeleteSuccess($event)"
+    (onError)="categoryDeleteService.onDeleteError($event)">
 </category-delete>

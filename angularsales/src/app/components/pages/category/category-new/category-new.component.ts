@@ -2,6 +2,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { ModalComponent } from 'src/app/components/bootstrap/modal/modal.component';
 import { ToastrService } from 'ngx-toastr';
+import { Category } from 'src/app/models';
+import { CategoryHttpService } from 'src/app/services/http/category-http.service';
 
 @Component({
     selector: 'category-new',
@@ -13,36 +15,34 @@ export class CategoryNewComponent implements OnInit {
     @ViewChild(ModalComponent)
     modal!: ModalComponent;
 
+    //emite os eventos successo ou erro
     @Output() onSuccess: EventEmitter<any> = new EventEmitter<any>()
     @Output() onError: EventEmitter<HttpErrorResponse> = new EventEmitter<HttpErrorResponse>()
 
-    category = {
-        name: ''
+    category: Category = {
+        name: '',
     }
 
-    constructor(private http: HttpClient, private toastr: ToastrService) { }
+    constructor(private categoryHttp: CategoryHttpService, private toastr: ToastrService) { }
 
     ngOnInit(): void {
     }
 
     submit() {
-        const token = window.localStorage.getItem('token')
-        this.http.post('http://localhost:8000/api/categories', this.category, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).subscribe(response => {
-            this.onSuccess.emit(this.category)
-            this.modal.hide()
-            this.toastr.success('Categoria Cadastrada com sucesso!')
-        }, (err) => {
-            this.onError.emit(err)
-            this.toastr.error('Ops! Erro ao cadastrar')
-        })
+        this.categoryHttp.create(this.category)
+            .subscribe((category) => {
+                this.onSuccess.emit(category)
+                this.modal.hide()
+            }, (err: HttpErrorResponse) => {
+                this.onError.emit(err)
+            })
     }
 
     showModal() {
-        this.modal.show()
+        setTimeout(() => {
+            this.modal.show()
+        }, 1000)
+        
     }
 
     hideModal($event: any) {

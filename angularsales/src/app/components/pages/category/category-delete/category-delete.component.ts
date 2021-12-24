@@ -1,7 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ModalComponent } from 'src/app/components/bootstrap/modal/modal.component';
+import { CategoryHttpService } from 'src/app/services/http/category-http.service';
 
 @Component({
     selector: 'category-delete',
@@ -21,48 +22,42 @@ export class CategoryDeleteComponent implements OnInit {
     _categoryId!: number
     category: any;
 
-    constructor(private http: HttpClient, private toastr: ToastrService) { }
+    constructor(private categoryHttp: CategoryHttpService, private toastr: ToastrService) { }
 
     ngOnInit(): void {
     }
 
     @Input()
     set categoryId(value: number) {
-        this.loader = true
+        this.loader = true;
         this._categoryId = value
         if (this._categoryId) {
-            const token = window.localStorage.getItem('token')
-            this.http.get<{ data: any }>(`http://localhost:8000/api/categories/${value}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }).subscribe((response) => {
-                this.category = response.data
-                this.loader = false
-
-            }, (error) => {
-                this.toastr.error('Erro ao carregar categoria!')
-            })
+            this.categoryHttp.get(this._categoryId)
+                .subscribe(category => {
+                    // @ts-ignore
+                    this.category = category
+                    this.loader = false;
+                }, (err) => {
+                    this.onError.emit(err)
+                    this.toastr.error('Ops! Erro ao carregar categoria')
+                })
         }
     }
 
     destroy() {
-        const token = window.localStorage.getItem('token')
-        this.http.delete(`http://localhost:8000/api/categories/${this._categoryId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).subscribe((response) => {
-            this.toastr.success('Categoria deletada com sucesso!')
-            this.onSuccess.emit(this.category)
-            this.modal.hide()
-        }, (error) => {
-            this.toastr.error('Erro ao deletar categoria!')
-        })
+        this.categoryHttp.destroy(this._categoryId)
+            .subscribe((category) => {
+                this.onSuccess.emit(category)
+                this.modal.hide()
+            }, (error: HttpErrorResponse) => {
+                this.onError.emit(error)
+            })
     }
 
     showModal() {
-        this.modal.show()
+        setTimeout(() => {
+            this.modal.show()
+        }, 1000)
     }
 
     hideModal($event: any) {

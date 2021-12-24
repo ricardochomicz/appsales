@@ -17,6 +17,7 @@ import { CategoryEditComponent } from './components/pages/category/category-edit
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { CategoryDeleteComponent } from './components/pages/category/category-delete/category-delete.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
     declarations: [
@@ -38,7 +39,8 @@ import { CategoryDeleteComponent } from './components/pages/category/category-de
         ToastrModule.forRoot(),
         NgxLoadingModule.forRoot({}),
         TooltipModule,
-        NgxSpinnerModule
+        NgxSpinnerModule,
+        NgxPaginationModule
     ],
     providers: [],
     bootstrap: [AppComponent]
