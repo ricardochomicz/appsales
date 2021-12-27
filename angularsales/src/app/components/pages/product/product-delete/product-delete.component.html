@@ -1,0 +1,12 @@
+<modal (onHide)="hideModal($event)">
+    <h5 modal-title>Deletar Produto</h5>
+    <div modal-body>
+        
+        Deseja deletar o produto? <b class="ml-3">{{product?.name}}</b>
+    </div>
+    <div modal-footer>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary" (click)="destroy()">Deletar</button>
+    </div>
+</modal>
+

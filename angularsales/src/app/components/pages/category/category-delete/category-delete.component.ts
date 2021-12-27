@@ -37,9 +37,6 @@ export class CategoryDeleteComponent implements OnInit {
                     // @ts-ignore
                     this.category = category
                     this.loader = false;
-                }, (err) => {
-                    this.onError.emit(err)
-                    this.toastr.error('Ops! Erro ao carregar categoria')
                 })
         }
     }

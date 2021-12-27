@@ -17,14 +17,14 @@ class ProductController extends Controller
     {
         $query = Product::query();
         $query = $this->onlyTrashedIfRequest($request, $query);
-        $products = Product::paginate();
+        $products = Product::paginate(5);
         return ProductResource::collection($products);
     }
 
 
     public function store(ProductRequest $request)
     {
-        $product = Product::create($request->all());
+        $product = Product::creates($request->all());
         $product->refresh();
         return new ProductResource($product);
     }

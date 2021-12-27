@@ -1,0 +1,64 @@
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title mt-1">Produtos</h3>
+        <button class="btn btn-primary btn-sm float-right"
+            (click)="productInsertService.showModalInsert()">Novo</button>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body p-0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 10px">#</th>
+                    <th>Nome</th>
+                    <th>Description</th>
+                    <th>Preço</th>
+                    <th class="text-center">Status</th>
+                    <th>Criado Em</th>
+                    <th style="width: 40px">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of products | paginate: {itemsPerPage: 5, currentPage: pagination.page, totalItems: pagination.totalItems}"
+                    [ngClass]="{'': 'product.active', 'text-danger': !product.active}">
+                    <td>{{product.id}}</td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.description}}</td>
+                    <td>{{product.price | numberFormatBr}}</td>
+                    <td class="text-center">
+                        <i class="fas fa-circle"
+                            [ngClass]="{'text-success': product.active, 'text-danger': !product.active}"
+                            tooltip="{{product.active ? 'Ativo' : 'Inativo'}}"></i>
+                    </td>
+                    <td>{{product.created_at}}</td>
+                    <td class="btn-group">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary mr-1"
+                            (click)="productUpdateService.showModalEdit(product.id)" *ngIf="product.id">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" (click)="productDeleteService.showModalDelete(product.id)" *ngIf="product.id">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination justify-content-center mt-2">
+            <pagination-controls (pageChange)="pageChanged($event)" previousLabel="Anterior" nextLabel="Próxima">
+            </pagination-controls>
+        </div>
+    </div>
+    <!-- /.card-body -->
+</div>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">Carregando Produtos...</p>
+</ngx-spinner>
+
+<product-new (onSuccess)="productInsertService.onInsertSuccess($event)"
+    (onError)="productInsertService.onInsertError($event)"></product-new>
+
+<product-edit [productId]="productId" (onSuccess)="productUpdateService.onEditSuccess($event)"
+    (onError)="productUpdateService.onEditError($event)"></product-edit>
+
+<product-delete [productId]="productId" (onSuccess)="productDeleteService.onDeleteSuccess($event)"
+    (onError)="productDeleteService.onDeleteError($event)"></product-delete>

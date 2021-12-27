@@ -52,11 +52,11 @@ export class CategoriesListComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.spinner.show()
         this.getCategories()
     }
 
     getCategories() {
-        this.spinner.show()
         this.categoryHttp.getAll(this.pagination.page)
             .subscribe(response => {
                 this.spinner.hide()

@@ -1,0 +1,33 @@
+<form method="post" (submit)="submit()">
+    <modal (onHide)="hideModal($event)">
+        <h5 modal-title>Novo Produto</h5>
+        <div modal-body>
+            <div class="form-group">
+                <label for="">Nome</label>
+                <input type="text" name="name" class="form-control" [(ngModel)]="product.name">
+            </div>
+            <div class="form-group">
+                <label for="">Preço</label>
+                <input type="text" name="price" class="form-control" [(ngModel)]="product.price">
+            </div>
+            <div class="form-group">
+                <label for="">Descrição</label>
+                <textarea name="description" [(ngModel)]="product.description" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <!-- Small switch -->
+                <span class="switch switch-sm">
+                    <input type="checkbox" class="switch" id="idChk-sm" name="active" [(ngModel)]="product.active"
+                        >
+                    <label for="idChk-sm">{{product.active ? 'Ativo' : 'Inativo'}}</label>
+                </span>
+            </div>
+        </div>
+        <div modal-footer>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+    </modal>
+</form>
+
+

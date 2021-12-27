@@ -18,6 +18,15 @@ import { TooltipModule } from 'ng2-tooltip-directive';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { CategoryDeleteComponent } from './components/pages/category/category-delete/category-delete.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ProductsListComponent } from './components/pages/product/products-list/products-list.component';
+import { ProductNewComponent } from './components/pages/product/product-new/product-new.component';
+import { ProductEditComponent } from './components/pages/product/product-edit/product-edit.component';
+import { ProductDeleteComponent } from './components/pages/product/product-delete/product-delete.component';
+import { NumberFormatBrPipe } from './pipes/number-format-br.pipe';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { NgxCurrencyModule } from 'ngx-currency';
+import { ProductCategoryListComponent } from './components/pages/product-category/product-category-list/product-category-list.component';
+
 
 @NgModule({
     declarations: [
@@ -28,7 +37,13 @@ import { NgxPaginationModule } from 'ngx-pagination';
         ModalComponent,
         CategoryNewComponent,
         CategoryEditComponent,
-        CategoryDeleteComponent
+        CategoryDeleteComponent,
+        ProductsListComponent,
+        ProductNewComponent,
+        ProductEditComponent,
+        ProductDeleteComponent,
+        NumberFormatBrPipe,
+        ProductCategoryListComponent
     ],
     imports: [
         BrowserModule,
@@ -40,7 +55,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
         NgxLoadingModule.forRoot({}),
         TooltipModule,
         NgxSpinnerModule,
-        NgxPaginationModule
+        NgxPaginationModule,
+        NgxMaskModule.forRoot(),
+        NgxCurrencyModule
     ],
     providers: [],
     bootstrap: [AppComponent]

@@ -43,7 +43,6 @@ export class CategoryEditComponent implements OnInit {
                     this.loader = false;
                 }, (err: HttpErrorResponse) => {
                     this.loader = false;
-                    this.onError.emit(err)
                     this.toastr.error(`Erro ao carregar categoria (Cód.${err.status} - ${err.statusText})`)
                 })
         }

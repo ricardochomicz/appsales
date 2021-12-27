@@ -3,6 +3,17 @@ export interface Category {
     name: string,
     active?: boolean,
     slug?: string,
-    created_at?: { date: string },
-    updated_at?: { date: string }
+    readonly created_at?: { date: string },
+    readonly updated_at?: { date: string }
+}
+
+export interface Product {
+    id?: number,
+    name: string,
+    description: string,
+    price: number,
+    active?: boolean,
+    readonly slug?: string,
+    readonly created_at?: { date: string },
+    readonly updated_at?: { date: string }
 }
