@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { map } from "rxjs";
 import { Observable } from "rxjs/internal/Observable";
 import { Product } from "src/app/models";
-import { HttpResource } from "./http-resource";
+import { HttpResource, SearchParams, SearchParamsBuilder } from "./http-resource";
 
 @Injectable({
     providedIn: 'root'
@@ -16,12 +16,11 @@ export class ProductHttpService implements HttpResource<Product> {
 
     constructor(private http: HttpClient) { }
 
-    getAll(page: number): Observable<{ data: Array<Product>, meta: any }> {
+    getAll(searchParams: SearchParams): Observable<{ data: Array<Product>, meta: any }> {
         const params = new HttpParams({
-            fromObject: {
-                page
-            }
-        })
+            fromObject: 
+                new SearchParamsBuilder(searchParams).makeObject()
+             })
         return this.http.get<{ data: Array<Product>, meta: any }>(this.baseURL, {
             params,
             headers: { Authorization: `Bearer ${this.token}` }

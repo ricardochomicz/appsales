@@ -30,19 +30,22 @@ export class ProductDeleteComponent implements OnInit {
         this._productId = value
         if (this._productId) {
             this.productHttp.get(this._productId)
-                .subscribe((product) => {
-                    this.product = product
+                .subscribe({
+                    // @ts-ignore
+                    next: (product) => this.product = product,
+                    error: (error: HttpErrorResponse) => this.toastr.error(`Erro ao carregar produto`)
                 })
         }
     }
 
     destroy() {
         this.productHttp.destroy(this._productId)
-            .subscribe((product) => {
-                this.onSuccess.emit(product)
-                this.modal.hide()
-            }, (error) => {
-                this.onError.emit(error)
+            .subscribe({
+                next: (product) => {
+                    this.onSuccess.emit(product)
+                    this.modal.hide()
+                },
+                error: (error: HttpErrorResponse) => this.onError.emit(error)
             })
     }
 

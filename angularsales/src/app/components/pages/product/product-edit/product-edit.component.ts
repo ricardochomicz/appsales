@@ -37,24 +37,23 @@ export class ProductEditComponent implements OnInit {
         this._productId = value
         if (this._productId) {
             this.productHttpService.get(this._productId)
-                .subscribe(product => {
+                .subscribe({
                     // @ts-ignore
-                    this.product = product
-                }, () => {
-                    this.toastr.error(`Erro ao carregar produto`)
+                    next: (product) => this.product = product,
+                    error: (error: HttpErrorResponse) => this.toastr.error(`Erro ao carregar produto`)
                 })
         }
     }
 
     submit() {
         this.productHttpService.update(this._productId, this.product)
-            .subscribe(product => {
+            .subscribe({
                 // @ts-ignore
-                this.product = product
-                this.onSuccess.emit(product)
-                this.modal.hide()
-            }, (error) => {
-                this.onError.emit(error)
+                next: product => {
+                    this.onSuccess.emit(product)
+                    this.modal.hide()
+                },
+                error: (error: HttpErrorResponse) => this.onError.emit(error)
             })
     }
 

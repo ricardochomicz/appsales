@@ -10,13 +10,15 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    
-    public function index()
+
+    public function index(Request $request)
     {
-        return CategoryResource::collection(Category::orderBy('name', 'asc')->paginate(5));     
+        //se tiver all na requisição traz todos os registros, caso contrario faz a paginação
+        $categories = $request->has('all') ? Category::all() : Category::orderBy('name', 'asc')->paginate(5);
+        return CategoryResource::collection($categories);
     }
 
-    
+
     public function store(CategoryRequest $request)
     {
         $category = Category::create($request->all());
@@ -24,20 +26,20 @@ class CategoryController extends Controller
         return new CategoryResource($category);
     }
 
-    
+
     public function show(Category $category)
     {
         return new CategoryResource($category);
     }
 
-    
+
     public function update(CategoryRequest $request, Category $category)
     {
         $category->update($request->all());
         return new CategoryResource($category);
     }
 
-   
+
     public function destroy(Category $category)
     {
         $category->delete();

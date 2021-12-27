@@ -26,6 +26,7 @@ import { NumberFormatBrPipe } from './pipes/number-format-br.pipe';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { ProductCategoryListComponent } from './components/pages/product-category/product-category-list/product-category-list.component';
+import { ProductCategoryNewComponent } from './components/pages/product-category/product-category-new/product-category-new.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { ProductCategoryListComponent } from './components/pages/product-categor
         ProductEditComponent,
         ProductDeleteComponent,
         NumberFormatBrPipe,
-        ProductCategoryListComponent
+        ProductCategoryListComponent,
+        ProductCategoryNewComponent
     ],
     imports: [
         BrowserModule,

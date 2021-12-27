@@ -55,7 +55,7 @@ export class ProductsListComponent implements OnInit {
     }
 
     getProducts() {
-        this.productHttp.getAll(this.pagination.page)
+        this.productHttp.getAll({page: this.pagination.page})
             .subscribe((response) => {
                 this.products = response.data
                 this.spinner.hide()

@@ -57,16 +57,19 @@ export class CategoriesListComponent implements OnInit {
     }
 
     getCategories() {
-        this.categoryHttp.getAll(this.pagination.page)
-            .subscribe(response => {
+        this.categoryHttp.getAll({page: this.pagination.page})
+        .subscribe({
+            next: (response) => {
                 this.spinner.hide()
                 this.categories = response.data
                 this.pagination.totalItems = response.meta.total
                 this.pagination.itemsPerPage = response.meta.per_page
-            }, (err: HttpErrorResponse) => {
+            },
+            error: (err: HttpErrorResponse) => {
                 this.spinner.hide()
                 this.toastr.error(`Erro ao carregar as categorias (Cód. ${err.status} - ${err.statusText})`)
-            })
+            }
+        })    
     }
 
     pageChanged(page: number) {

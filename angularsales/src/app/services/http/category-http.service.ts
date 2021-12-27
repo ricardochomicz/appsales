@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { Category } from 'src/app/models';
-import { HttpResource } from './http-resource';
+import { HttpResource, SearchParams, SearchParamsBuilder } from './http-resource';
 
 
 
@@ -16,14 +16,13 @@ export class CategoryHttpService implements HttpResource<Category> {
 
     constructor(private http: HttpClient) { }
 
-    getAll(page: number): Observable<{ data: Array<Category>, meta: any }> {
+    getAll(searchParams: SearchParams): Observable<{ data: Array<Category>, meta: any }> {
         const token = window.localStorage.getItem('token')
         const params = new HttpParams({
-            fromObject: {
-                page
-            }
+            fromObject:
+                new SearchParamsBuilder(searchParams).makeObject()
         })
-        return this.http.get<{ data: Array<Category>, meta:any }>(this.baseUrl, {
+        return this.http.get<{ data: Array<Category>, meta: any }>(this.baseUrl, {
             params,
             headers: {
                 Authorization: `Bearer ${token}`
@@ -61,14 +60,14 @@ export class CategoryHttpService implements HttpResource<Category> {
             .pipe(map(response => response.data))
     }
 
-    destroy(id:number) {
+    destroy(id: number) {
         const token = window.localStorage.getItem('token')
         return this.http.delete<{ data: any }>(`${this.baseUrl}/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-            
+
     }
 
 

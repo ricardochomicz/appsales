@@ -32,14 +32,14 @@ export class ProductNewComponent implements OnInit {
 
     submit() {
         this.productHttp.create(this.product)
-        .subscribe({
-            next: (product) => {
-                this.onSuccess.emit(product)
-                this.modal.hide()
-            },
-            error: (error: HttpErrorResponse) => this.onError.emit(error)           
-        }) 
-     }
+            .subscribe({
+                next: (product) => {
+                    this.onSuccess.emit(product)
+                    this.modal.hide()
+                },
+                error: (error: HttpErrorResponse) => this.onError.emit(error)
+            })
+    }
 
     showModal() {
         this.modal.show()
