@@ -36,8 +36,12 @@
                             (click)="productUpdateService.showModalEdit(product.id)" *ngIf="product.id">
                             <i class="fas fa-pencil-alt"></i>
                         </a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" (click)="productDeleteService.showModalDelete(product.id)" *ngIf="product.id">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger mr-1" (click)="productDeleteService.showModalDelete(product.id)" *ngIf="product.id">
                             <i class="fas fa-trash-alt"></i>
+                        </a>
+
+                        <a class="btn btn-sm btn-warning" [routerLink]="['/products', product.id, 'categories', 'list']">
+                            <i class="fas fa-list-alt" tooltip="Categorias"></i>
                         </a>
                     </td>
                 </tr>

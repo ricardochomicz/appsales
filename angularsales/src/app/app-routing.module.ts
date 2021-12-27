@@ -16,13 +16,13 @@ const routes: Routes = [
         data: { routeName: "Categorias" }
     },
     {
-        path: 'products/list',
-        component: ProductsListComponent
-    },
-    {
-        path: 'products/categories/list',
+        path: 'products/:product/categories/list',
         component: ProductCategoryListComponent
     },
+    {
+        path: 'products/list',
+        component: ProductsListComponent
+    }, 
     {
         path: '',
         redirectTo: '/login',
